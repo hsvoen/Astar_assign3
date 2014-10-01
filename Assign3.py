@@ -51,8 +51,10 @@ class Node:
 	estDist 	= 0		#h - estimate cost to goal
 	totalDist 	= 0		#f-estimated total cost of solution path going through this node, f = g+h
 
-	#parent - coordinates to the cheapest parent node?
-
+	#parents and children
+	children = [] #Is not used? Saves the entire node as a child.
+	parentX = 0 #coordinates for current best parent
+	parentY = 0
 
 	####Function declarations###
 	def __init__(self, xPos, yPos, distance, totalDist):
@@ -64,6 +66,8 @@ class Node:
 	def __lt__(self, other): # Comparison method for the priority queue
 		return self.totalDist < other.totalDist
 
+	def addChild(self, other):
+		children.append(other)
 
 	def estimate(self, xDest, yDest):
 		xd = xDest - self.xPos
@@ -110,19 +114,20 @@ def Astar(board):
 
 
 
-	#Generating open and closed nodes lists
+	# #Generating open and closed nodes lists
 	closedNodes = []
 	openNodes = []
+	tableOfNodes = [] #contains all nodes created.
 
 	row = [0]*len(board[0])
 	for i in range(len(board)):
-		closedNodes.append(list(row))
-		openNodes.append(list(row))
+	 	closedNodes.append(list(row))
+	 	openNodes.append(list(row))
+	 	tableOfNodes.append(list(row))
 
-	print closedNodes
 
 
-	#Priority queue
+	#Priority queue/Open nodes
 	priQue = [[], []]
 	priInd = 0 #queue index
 
@@ -130,20 +135,22 @@ def Astar(board):
 	n0 = Node(startX, startY, 0, 0)
 	n0.updateTotalDist(goalX, goalY)
 	heappush(priQue[priInd],n0)
-	openNodes[startX][startY] = n0.totalDist
+	openNodes[startX][startY] = n0
+	
 
 
+	#Possible directions to move in.
+	directions = [[1,0], [-1,0], [0,1], [0,-1]]
 
 	#Agenda loop
 	#Will run while there are still elements int the priority queue.
 	while len(priQue[priInd]) > 0:
-		
+		print "entered agenda loop"
 
 		n0 = heappop(priQue[priInd])
 		x = n0.xPos
 		y = n0.yPos
-		openNodes[x][y] = 0
-		closedNodes[x][y] = 1
+		closedNodes[x][y] = n0
 
 
 		#If goal is reached, return and exit.
@@ -153,11 +160,23 @@ def Astar(board):
 			#return stuff
 
 		#Expand childrens of the node.
+		for direct in directions:
+			dx = x + direct[0]
+			dy = y + direct[1]
 
-		# Generate directions
+			
+			# Make sure that the move does not exit the board
+			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
+				# check if children have allready been created
+				if(openNodes[dx][dy] != 0 or closedNodes[dx][dy] != 0):
 
-		direction = [[1,0],[1,],]
 
+				
+
+
+
+
+	return None #search failed
 
 		
 
