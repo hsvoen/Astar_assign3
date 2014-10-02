@@ -8,3 +8,6 @@ wwwwwwwwgggggBgggggwwwwwwwwwwwwwwRwwwwww
 wwwwggggggfffFffgggggggggwwwwwwwwRwwwwww
 wwggggfffffffFffffffggggggggggggRRgwwwww
 wgggfffrrrrrrRRRRRRRRRRRRRRRRRRRRggggggg
+
+
+Total distance/weight from start to destination is 160

@@ -8,3 +8,6 @@ fFFFFFGGGGGGGGGGGGGGGGGwwwwwwggggggmmmmm
 fAfffffffffgggggggggmmmmmmwwwwmmmmmmmmmm
 fffffffffffffffmmmmmmmmmmmmmwwwmmmmmmmmm
 ffffffffffmmmmmmmmmmmmmmmmmmwwwmmmmmmmmm
+
+
+Total distance/weight from start to destination is 595

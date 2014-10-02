@@ -5,3 +5,6 @@
 ......#o#oo#o.......
 ......#ooo#.o.......
 .......###..oooooooB
+
+
+Total distance/weight from start to destination is 27

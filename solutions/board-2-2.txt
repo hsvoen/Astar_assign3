@@ -8,3 +8,6 @@ gggrrggggggRRggggggffffRRRRRRfffffffffff
 ggrrgggffgggRRRRggffRRRRfrffRrrrrfffffff
 ggrggffffffffffRRRRRRffffrffFfffrrffffff
 ggrgfffffffffffffffffffffrffBffffrrfffff
+
+
+Total distance/weight from start to destination is 71
