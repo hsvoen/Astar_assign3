@@ -170,17 +170,17 @@ class Node:
 	ID 			= 0
 	xPos 		= 0
 	yPos 		= 0
-	dist 		= 0 	#g - cost of getting to node
-	estDist 	= 0		#h - estimate cost to goal
-	totalDist 	= 0		#f-estimated total cost of solution path going through this node, f = g+h
+	dist 		= 0 		#g - cost of getting to node
+	estDist 	= 0			#h - estimate cost to goal
+	totalDist 	= 0			#f-estimated total cost of solution path going through this node, f = g+h
 
 	#parents and children
-	children = [] 		#Stores the indices of the child [x,y], use it to look up in the tableOfNodes
-	parentX = 0 		#coordinates for current best parent
-	parentY = 0
+	children 	= [] 		#Stores the indices of the child [x,y], use it to look up in the tableOfNodes
+	parentX 	= 0 		#coordinates for current best parent
+	parentY 	= 0
 
-	weight = 0 			#Weight of the node
-	isOpen = False 		#Determines if the node is in the open list or not
+	weight 		= 0 		#Weight of the node
+	isOpen 		= False 	#Determines if the node is in the open list or not
 
 
 
@@ -189,12 +189,12 @@ class Node:
 
 	#=================== classFunction declarations=============================
 	def __init__(self, xPos, yPos, distance, totalDist, weight, ID):
-		self.xPos = xPos
-		self.yPos = yPos
-		self.dist = distance
-		self.totalDist = totalDist
-		self.weight = weight
-		self.ID = ID
+		self.xPos 		= xPos
+		self.yPos 		= yPos
+		self.dist 		= distance
+		self.totalDist 	= totalDist
+		self.weight 	= weight
+		self.ID 		= ID
 
 	def __lt__(self, other): # Comparison method for the priority queue
 		return self.totalDist < other.totalDist
@@ -222,18 +222,7 @@ class Node:
 
 
 
-##################class end#####################
-
-
-
-
-
-
-
-
-
-
-
+#============= Class declaration end ===========
 
 
 
@@ -305,51 +294,41 @@ def Astar(board):
 			dx = x + direct[0]
 			dy = y + direct[1]
 
-			#print "Searching node dx = %i, dy = %i, symbol: %s" %(dx, dy, board[dx][dy])
-			#print "checking in direction x = %i, y = %i" %(direct[0], direct[1])
 			
 			# Make sure that the move does not exit the board
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
 				
 				if(tableOfNodes[dx][dy] == 0 ):
-					#print "New node, x = %i, y = %i " %(dx, dy)
+
 					#Add child to parent.
-					weight = getWeight(board[dx][dy])
-					nChild = Node(dx,dy, n0.dist + weight, 0, weight, nodeID)
-					nodeID += 1
+					weight 		= getWeight(board[dx][dy])
+					nChild 		= Node(dx,dy, n0.dist + weight, 0, weight, nodeID)
+					nodeID 		+= 1
 					nChild.updateTotalDist(goalX,goalY)
 					nChild.setParent(n0)
 
-					nChild.isOpen = True
-					tableOfNodes[dx][dy] = nChild
+					nChild.isOpen 			= True
+					tableOfNodes[dx][dy] 	= nChild
 
 					add_task(nChild, nChild.totalDist)
 
 
 				# check if children have allready been created
 				elif (tableOfNodes[dx][dy] != 0 ):
-					#print "node allready created, x = %i, y = %i " %(dx, dy)
-					if n0.dist + tableOfNodes[dx][dy].weight < tableOfNodes[dx][dy].dist: #tests if the node is a better parent than the old one
-						#print "Better parent found. Symbol: %s" %board[dx][dy]
-						#print "old distance: %i, new distance: %i" %(tableOfNodes[dx][dy].dist, n0.dist + n0.weight)
+					if n0.dist + tableOfNodes[dx][dy].weight < tableOfNodes[dx][dy].dist: # Test if n0 is better than the current best parent
 						
 						tableOfNodes[dx][dy].dist = n0.dist + tableOfNodes[dx][dy].weight
 						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
 						tableOfNodes[dx][dy].setParent(n0)
 
 						if(tableOfNodes[dx][dy].isOpen):
-							#print "node is in open"
-
-							#print "searching priority queue for x = %i, y = %i " %(dx, dy)
-
 							add_task(tableOfNodes[dx][dy],tableOfNodes[dx][dy].totalDist) 					
 						
-
 						else:
 							propogatePathImprovement(tableOfNodes[dx][dy])				
 
 	print "Search failed"
-	return None #search failed
+	return None 
 
 		
 
