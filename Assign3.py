@@ -218,12 +218,17 @@ def Astar(board):
 	#Agenda loop
 	#Will run while there are still elements int the priority queue.
 	while len(priQue[priInd]) > 0:
-		
+		print "Agenda loop"
+
 
 		n0 = heappop(priQue[priInd])
 		x = n0.xPos
 		y = n0.yPos
 		
+		print "popping node, x = %i, y = %i " %(x, y)
+		print "node children:"
+		print tableOfNodes[x][y].children
+
 		tableOfNodes[x][y].isOpen = False
 
 		#closedNodes[x][y] = n0 #replace with indices?
@@ -245,6 +250,8 @@ def Astar(board):
 			dx = x + direct[0]
 			dy = y + direct[1]
 
+			print "Searching node dx = %i, dy = %i" %(dx, dy)
+			print "checking in direction x = %i, y = %i" %(direct[0], direct[1])
 			
 			# Make sure that the move does not exit the board
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
@@ -258,7 +265,6 @@ def Astar(board):
 					nChild.setParent(n0)
 
 					nChild.isOpen = True
-					#openNodes[dx][dy] = nChild
 					tableOfNodes[dx][dy] = nChild
 
 					heappush(priQue[priInd], nChild)
@@ -267,16 +273,45 @@ def Astar(board):
 				# check if children have allready been created
 				elif (tableOfNodes[dx][dy] != 0 ):
 					print "node allready created, x = %i, y = %i " %(dx, dy)
-					#n0.addChild() #Add children, how to save the data to closedNodes and TableOfNodes?
 					if n0.dist + n0.weight < tableOfNodes[dx][dy].dist: #tests if the node is a better parent than the old one
+						print "Better parent found"
 						tableOfNodes[dx][dy].dist = n0.dist + n0.weight
 						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
 						tableOfNodes[dx][dy].setParent(n0)
 
-						propogatePathImprovement(tableOfNodes[dx][dy])
+						if(tableOfNodes[dx][dy].isOpen):
+							print "node is in open"
 
-						#Need to update the cost of getting to all children as well. Unsure how to do that.
-				
+							try:
+								print "searching priority queue for x = %i, y = %i " %(dx, dy)
+								print "old length of priority queue: %i" %(len(priQue[priInd]))
+								print "priInd = %i" % priInd
+								while not (priQue[priInd][0].xPos == dx and priQue[priInd][0].yPos == dy):
+									
+									print "in queue: x = %i, y = %i " %(priQue[priInd][0].xPos,priQue[priInd][0].yPos)
+
+									heappush(priQue[1 - priInd], priQue[priInd][0])
+									heappop(priQue[priInd])
+
+								print "found node x = %i, y = %i " %(priQue[priInd][0].xPos,priQue[priInd][0].yPos)
+								heappop(priQue[priInd]) # remove the target node
+								# empty the larger size priority queue to the smaller one
+								if len(priQue[priInd]) > len(priQue[1 - priInd]):
+									priInd = 1 - priInd
+									while len(priQue[priInd]) > 0:
+										heappush(priQue[1-priInd], priQue[priInd][0])
+										heappop(priQue[priInd])       
+									priInd = 1 - priInd
+									heappush(priQue[priInd], tableOfNodes[dx][dy]) # add the better node instead
+								print "new length of priority queue: %i" %(len(priQue[priInd]))
+							except:
+								print "####################################exception happened##################################################"
+								print "priority queue update failed for x = %i, y = %i " %(dx, dy)
+							
+						
+
+						else:
+							propogatePathImprovement(tableOfNodes[dx][dy])				
 
 
 
@@ -290,6 +325,7 @@ def Astar(board):
 	# for rows in tableOfNodes:
 	# 	for nodes in rows:
 	# 		print nodes.totalDist
+	print "Search failed"
 	return None #search failed
 
 		
@@ -300,7 +336,8 @@ def Astar(board):
 
 
 #####Testcode here###########
-board = readBoard(1,3)
+board = readBoard(1,1)
+print board[4][9]
 
 
 print Astar(board)
