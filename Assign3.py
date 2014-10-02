@@ -40,6 +40,67 @@ def findGoal(board):
 			if board[x][y] == "B":
 				return [x,y]
 
+def getWeight(string):
+
+	#for subproblem A.1
+	if string == ".":
+		return 1
+	elif string == "#":
+		return 999999999
+	else:
+		return 0
+
+
+def propogatePathImprovement(node):
+
+
+
+	for childCord in node.children:
+		childX = childCord[0]
+		childY = childCord[1]
+		child = tableOfNodes[childX][childY]
+
+		#if n0.dist + n0.weight < tableOfNodes[dx][dy].dist  #tests if the node is a better parent than the old one
+		if node.dist + child.weight < child.dist:
+			child.dist = node.dist + child.weight
+			child.updateTotalDist(goalX,goalY)
+			child.setParent(node)
+
+			tableOfNodes[childX][childY] = child
+
+			propogatePathImprovement(tableOfNodes[childX][childY])
+
+
+def print_solution(board, table_of_nodes, goalX, goalY):
+
+	x = goalX
+	y = goalY
+
+	solution = []
+	row = [0]*len(board[0])
+	for i in range(len(board)):
+	 	solution.append(list(row))
+
+
+
+	while board[x][y] != 'A':
+		if board[x][y] == '.':
+			solution[x][y] = 'o'
+		else:
+			solution[x][y] = board[x][y].capitalize()
+		x = table_of_nodes[x][y].parentX
+		y = table_of_nodes[x][y].parentY
+
+	for x in range(len(board)):
+		for y in range(len(board[x])):
+			if solution[x][y] == 0:
+				solution[x][y] = board[x][y]
+	finalmap = ""
+	for row in solution:
+		test = "".join(row) +"\n"
+		finalmap = finalmap + test
+
+	return finalmap
 
 
 ########## Class start #############################
@@ -56,15 +117,16 @@ class Node:
 	parentX = 0 #coordinates for current best parent
 	parentY = 0
 
-	weight = 1 #Need to be changed for part 2.
-
+	weight = 0 
+	isOpen = False #use this variable to decide if the node is in the open or closed list?
 
 	####Function declarations###
-	def __init__(self, xPos, yPos, distance, totalDist):
+	def __init__(self, xPos, yPos, distance, totalDist, weight):
 		self.xPos = xPos
 		self.yPos = yPos
 		self.dist = distance
 		self.totalDist = totalDist
+		self.weight = weight
 
 	def __lt__(self, other): # Comparison method for the priority queue
 		return self.totalDist < other.totalDist
@@ -86,6 +148,9 @@ class Node:
 	def updateTotalDist(self, xDest, yDest):
 		self.totalDist = self.estimate(xDest, yDest) + self.dist
 
+	def setParent(self, parent):
+		self.parentX = parent.xPos
+		self.parentY = parent.yPos
 
 	# status: open/closed
 	# parent: pointer to current best (cheapest) parent node
@@ -118,14 +183,14 @@ def Astar(board):
 
 
 	# #Generating open and closed nodes lists
-	closedNodes = []
-	openNodes = []
+	#closedNodes = []
+	#openNodes = []
 	tableOfNodes = [] #contains all nodes created.
 
 	row = [0]*len(board[0])
 	for i in range(len(board)):
-	 	closedNodes.append(list(row))
-	 	openNodes.append(list(row))
+	 	#closedNodes.append(list(row))
+	 	#openNodes.append(list(row))
 	 	tableOfNodes.append(list(row))
 
 
@@ -135,10 +200,14 @@ def Astar(board):
 	priInd = 0 #queue index
 
 	# Creating the start node and pushing it into the list of open nodes.
-	n0 = Node(startX, startY, 0, 0)
+	n0 = Node(startX, startY, 0, 0, 0)
 	n0.updateTotalDist(goalX, goalY)
+	n0.isOpen = True
+
 	heappush(priQue[priInd],n0)
-	openNodes[startX][startY] = n0
+	
+
+	#openNodes[startX][startY] = n0
 	tableOfNodes[startX][startY] =n0
 	
 
@@ -149,17 +218,24 @@ def Astar(board):
 	#Agenda loop
 	#Will run while there are still elements int the priority queue.
 	while len(priQue[priInd]) > 0:
-		print "entered agenda loop"
+		
 
 		n0 = heappop(priQue[priInd])
 		x = n0.xPos
 		y = n0.yPos
-		closedNodes[x][y] = n0 #replace with indices?
-		openNodes[x][y] = 0
+		
+		tableOfNodes[x][y].isOpen = False
+
+		#closedNodes[x][y] = n0 #replace with indices?
+		#openNodes[x][y] = 0
 
 
 		#If goal is reached, return and exit.
-		#if (x == goalX and y == goalY):
+		if (x == goalX and y == goalY):
+
+			print tableOfNodes[goalX][goalY].totalDist
+			return print_solution(board, tableOfNodes, goalX, goalY)
+
 			#Do stuff here.
 
 			#return stuff
@@ -174,13 +250,15 @@ def Astar(board):
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
 				
 				if(tableOfNodes[dx][dy] == 0 ):
+					print "New node, x = %i, y = %i " %(dx, dy)
 					#Add child to parent.
-					nChild = Node(dx,dy, n0.dist +1, 0) #need to add weight of the node being created. Need to be modified later.
+					weight = getWeight(board[dx][dy])
+					nChild = Node(dx,dy, n0.dist + weight, 0, weight)
 					nChild.updateTotalDist(goalX,goalY)
-					nChild.parentX = x
-					nChild.parentY = y
+					nChild.setParent(n0)
 
-					openNodes[dx][dy] = nChild
+					nChild.isOpen = True
+					#openNodes[dx][dy] = nChild
 					tableOfNodes[dx][dy] = nChild
 
 					heappush(priQue[priInd], nChild)
@@ -188,12 +266,14 @@ def Astar(board):
 
 				# check if children have allready been created
 				elif (tableOfNodes[dx][dy] != 0 ):
+					print "node allready created, x = %i, y = %i " %(dx, dy)
 					#n0.addChild() #Add children, how to save the data to closedNodes and TableOfNodes?
-					if n0.dist + n0.weight < tableOfNodes[dx][dy]: #tests if the node is a better parent than the old one
+					if n0.dist + n0.weight < tableOfNodes[dx][dy].dist: #tests if the node is a better parent than the old one
 						tableOfNodes[dx][dy].dist = n0.dist + n0.weight
 						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
-						tableOfNodes[dx][dy].parentX = x
-						tableOfNodes[dx][dy].parentY = y
+						tableOfNodes[dx][dy].setParent(n0)
+
+						propogatePathImprovement(tableOfNodes[dx][dy])
 
 						#Need to update the cost of getting to all children as well. Unsure how to do that.
 				
@@ -204,12 +284,12 @@ def Astar(board):
 
 
 				
+	
 
 
-
-	for rows in tableOfNodes:
-		for nodes in rows:
-			print nodes.totalDist
+	# for rows in tableOfNodes:
+	# 	for nodes in rows:
+	# 		print nodes.totalDist
 	return None #search failed
 
 		
@@ -220,7 +300,7 @@ def Astar(board):
 
 
 #####Testcode here###########
-board = readBoard(1,1)
-print board
+board = readBoard(1,3)
 
-Astar(board)
+
+print Astar(board)
