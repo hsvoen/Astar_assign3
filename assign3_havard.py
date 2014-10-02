@@ -8,7 +8,7 @@ import itertools
 
 
 
-############### WARNING
+# WARNING
 # x and y are opposite of what is logical. [x][y] is correct for table lookup.
 
 
@@ -17,7 +17,7 @@ import itertools
 
 
 
-###############################Various functions implemented here######################
+#=================================== Various functions implemented here ===================================
 
 #Reads the board from text files.
 def readBoard(subprob, boardIndex):
@@ -95,9 +95,6 @@ def propogatePathImprovement(node):
 
 
 
-
-
-
 def print_solution(board, table_of_nodes, goalX, goalY):
 	print "Printing solution to console"
 	x = goalX
@@ -116,7 +113,6 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 			solution[x][y] = 'o'
 		else:
 			solution[x][y] = board[x][y].capitalize()
-		print "x = %i, y = %i, symbol: %s" %(x, y, solution[x][y])
 		next_x = table_of_nodes[x][y].parentX
 		next_y = table_of_nodes[x][y].parentY
 		x = next_x
@@ -129,11 +125,15 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 	for row in solution:
 		test = "".join(row) +"\n"
 		finalmap = finalmap + test
-
+	finalmap = finalmap + "\n\nTotal distance/weight from start to destination is %i" %table_of_nodes[goalX][goalY].totalDist
+	print finalmap
 	return finalmap
 
 
-######################## Priority queue implemented here #############################################
+
+
+
+#================================ Priority queue implemented here ===================================
 
 
 
@@ -164,12 +164,7 @@ def pop_task():
 
 
 
-
-
-
-
-
-########## Class start #############################
+#================================= Class declaration start============================================
 class Node:
 	#state
 	ID 			= 0
@@ -180,14 +175,19 @@ class Node:
 	totalDist 	= 0		#f-estimated total cost of solution path going through this node, f = g+h
 
 	#parents and children
-	children = [] #Stores the indices of the child [x,y], use it to look up in the tableOfNodes
-	parentX = 0 #coordinates for current best parent
+	children = [] 		#Stores the indices of the child [x,y], use it to look up in the tableOfNodes
+	parentX = 0 		#coordinates for current best parent
 	parentY = 0
 
-	weight = 0 
-	isOpen = False #use this variable to decide if the node is in the open or closed list?
+	weight = 0 			#Weight of the node
+	isOpen = False 		#Determines if the node is in the open list or not
 
-	####Function declarations###
+
+
+
+
+
+	#=================== classFunction declarations=============================
 	def __init__(self, xPos, yPos, distance, totalDist, weight, ID):
 		self.xPos = xPos
 		self.yPos = yPos
@@ -220,9 +220,7 @@ class Node:
 		self.parentX = parent.xPos
 		self.parentY = parent.yPos
 
-	# status: open/closed
-	# parent: pointer to current best (cheapest) parent node
-	# kids: list of all successor nodes.
+
 
 ##################class end#####################
 
@@ -243,52 +241,40 @@ class Node:
 
 
 
-#A* algorithm
+#====================================== A* algorithm =========================================================
 #Takes in a board and returns the shortest path from start to goal
 def Astar(board):
 
 
 	#Finding start and goal positions
-	start_pos = findStart(board)
-	startX = start_pos[0]
-	startY = start_pos[1]
-	goal_pos = findGoal(board)
-	goalX = goal_pos[0]
-	goalY = goal_pos[1]
-	
-	#Priority queue/Open nodes
-	#pq = []                         # list of entries arranged in a heap
-	#entry_finder = {}               # mapping of tasks to entries
-	#REMOVED = '<removed-task>'      # placeholder for a removed task
-	#counter = itertools.count()     # unique sequence count
+	start_pos 	= findStart(board)
+	startX		= start_pos[0]
+	startY 		= start_pos[1]
+	goal_pos 	= findGoal(board)
+	goalX 		= goal_pos[0]
+	goalY 		= goal_pos[1]
 
 
-	tableOfNodes = [] 				# contains all nodes created.
+
+
+	tableOfNodes 	= []		# contains all nodes created.
+	nodeID			= 1 		# Unique ID for the nodes
 
 	row = [0]*len(board[0])
 	for i in range(len(board)):
 	 	tableOfNodes.append(list(row))
 
-	nodeID = 1
-
-
-
-
-
-
+	
 
 
 	# Creating the start node and pushing it into the list of open nodes.
-	n0 = Node(startX, startY, 0, 0, 0, nodeID)
-	nodeID += 1
+	n0 				= Node(startX, startY, 0, 0, 0, nodeID)
+	nodeID 			+= 1
+	n0.isOpen 		= True
+
 	n0.updateTotalDist(goalX, goalY)
-	n0.isOpen = True
-
-	#heappush(priQue[priInd],n0)
-	add_task(n0, n0.totalDist)
-
-	#openNodes[startX][startY] = n0
-	tableOfNodes[startX][startY] =n0
+	add_task(n0, n0.totalDist)			# adds the node to the priority queue
+	tableOfNodes[startX][startY] 		= n0
 	
 
 
@@ -298,28 +284,19 @@ def Astar(board):
 	#Agenda loop
 	#Will run while there are still elements int the priority queue.
 	while len(entry_finder) > 0:
-		print "Agenda loop"
 
-
-		#n0 = heappop(priQue[priInd])
-		n0 = pop_task()
-		x = n0.xPos
-		y = n0.yPos
+		n0 	= pop_task()		# Get the lowest cost task from the priority queue
+		x 	= n0.xPos
+		y 	= n0.yPos
 		
-		print "popping node, x = %i, y = %i " %(x, y)
+		#print "popping node, x = %i, y = %i " %(x, y)
 
 		tableOfNodes[x][y].isOpen = False
 
-		#closedNodes[x][y] = n0 #replace with indices?
-		#openNodes[x][y] = 0
 
-
-		#If goal is reached, return and exit.
+		#Check if destination have been reached
 		if (x == goalX and y == goalY):
-
 			print "Goal found. Total distance is: %i" %n0.totalDist
-
-			print tableOfNodes[goalX][goalY].totalDist
 			return print_solution(board, tableOfNodes, goalX, goalY)
 
 
@@ -329,13 +306,13 @@ def Astar(board):
 			dy = y + direct[1]
 
 			#print "Searching node dx = %i, dy = %i, symbol: %s" %(dx, dy, board[dx][dy])
-			print "checking in direction x = %i, y = %i" %(direct[0], direct[1])
+			#print "checking in direction x = %i, y = %i" %(direct[0], direct[1])
 			
 			# Make sure that the move does not exit the board
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
 				
 				if(tableOfNodes[dx][dy] == 0 ):
-					print "New node, x = %i, y = %i " %(dx, dy)
+					#print "New node, x = %i, y = %i " %(dx, dy)
 					#Add child to parent.
 					weight = getWeight(board[dx][dy])
 					nChild = Node(dx,dy, n0.dist + weight, 0, weight, nodeID)
@@ -351,21 +328,21 @@ def Astar(board):
 
 				# check if children have allready been created
 				elif (tableOfNodes[dx][dy] != 0 ):
-					print "node allready created, x = %i, y = %i " %(dx, dy)
+					#print "node allready created, x = %i, y = %i " %(dx, dy)
 					if n0.dist + tableOfNodes[dx][dy].weight < tableOfNodes[dx][dy].dist: #tests if the node is a better parent than the old one
-						print "Better parent found. Symbol: %s" %board[dx][dy]
-						print "old distance: %i, new distance: %i" %(tableOfNodes[dx][dy].dist, n0.dist + n0.weight)
+						#print "Better parent found. Symbol: %s" %board[dx][dy]
+						#print "old distance: %i, new distance: %i" %(tableOfNodes[dx][dy].dist, n0.dist + n0.weight)
 						
-						tableOfNodes[dx][dy].dist = n0.dist + n0.weight
+						tableOfNodes[dx][dy].dist = n0.dist + tableOfNodes[dx][dy].weight
 						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
 						tableOfNodes[dx][dy].setParent(n0)
 
 						if(tableOfNodes[dx][dy].isOpen):
-							print "node is in open"
+							#print "node is in open"
 
-							print "searching priority queue for x = %i, y = %i " %(dx, dy)
+							#print "searching priority queue for x = %i, y = %i " %(dx, dy)
 
-							add_task(tableOfNodes[dx][dy],tableOfNodes[dx][dy].totalDist) #For some reason, including this line breaks the program.							
+							add_task(tableOfNodes[dx][dy],tableOfNodes[dx][dy].totalDist) 					
 						
 
 						else:
@@ -385,10 +362,10 @@ def Astar(board):
 
 
 
-#####Testcode here###########
+#Main()
 for i in [1,2]:
 	for k in [1,2,3,4]:
-		print i, k
+		print "\n\nSearching for the shortest pathboards\\board-%s-%s.txt" %(i, k)
 
 		pq = []                         # list of entries arranged in a heap
 		entry_finder = {}               # mapping of tasks to entries
