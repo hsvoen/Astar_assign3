@@ -52,9 +52,12 @@ class Node:
 	totalDist 	= 0		#f-estimated total cost of solution path going through this node, f = g+h
 
 	#parents and children
-	children = [] #Is not used? Saves the entire node as a child.
+	children = [] #Stores the indices of the child [x,y], use it to look up in the tableOfNodes
 	parentX = 0 #coordinates for current best parent
 	parentY = 0
+
+	weight = 1 #Need to be changed for part 2.
+
 
 	####Function declarations###
 	def __init__(self, xPos, yPos, distance, totalDist):
@@ -67,7 +70,7 @@ class Node:
 		return self.totalDist < other.totalDist
 
 	def addChild(self, other):
-		children.append(other)
+		children.append([other.xPos, other.Ypos])
 
 	def estimate(self, xDest, yDest):
 		xd = xDest - self.xPos
@@ -136,6 +139,7 @@ def Astar(board):
 	n0.updateTotalDist(goalX, goalY)
 	heappush(priQue[priInd],n0)
 	openNodes[startX][startY] = n0
+	tableOfNodes[startX][startY] =n0
 	
 
 
@@ -150,7 +154,8 @@ def Astar(board):
 		n0 = heappop(priQue[priInd])
 		x = n0.xPos
 		y = n0.yPos
-		closedNodes[x][y] = n0
+		closedNodes[x][y] = n0 #replace with indices?
+		openNodes[x][y] = 0
 
 
 		#If goal is reached, return and exit.
@@ -167,15 +172,44 @@ def Astar(board):
 			
 			# Make sure that the move does not exit the board
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
+				
+				if(tableOfNodes[dx][dy] == 0 ):
+					#Add child to parent.
+					nChild = Node(dx,dy, n0.dist +1, 0) #need to add weight of the node being created. Need to be modified later.
+					nChild.updateTotalDist(goalX,goalY)
+					nChild.parentX = x
+					nChild.parentY = y
+
+					openNodes[dx][dy] = nChild
+					tableOfNodes[dx][dy] = nChild
+
+					heappush(priQue[priInd], nChild)
+
+
 				# check if children have allready been created
-				if(openNodes[dx][dy] != 0 or closedNodes[dx][dy] != 0):
+				elif (tableOfNodes[dx][dy] != 0 ):
+					#n0.addChild() #Add children, how to save the data to closedNodes and TableOfNodes?
+					if n0.dist + n0.weight < tableOfNodes[dx][dy]: #tests if the node is a better parent than the old one
+						tableOfNodes[dx][dy].dist = n0.dist + n0.weight
+						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
+						tableOfNodes[dx][dy].parentX = x
+						tableOfNodes[dx][dy].parentY = y
+
+						#Need to update the cost of getting to all children as well. Unsure how to do that.
+				
+
+
+
+
 
 
 				
 
 
 
-
+	for rows in tableOfNodes:
+		for nodes in rows:
+			print nodes.totalDist
 	return None #search failed
 
 		
