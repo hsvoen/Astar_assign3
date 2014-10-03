@@ -1,0 +1,26 @@
+shortest path found with the BFS algorithm:
+
+....................
+....................
+.........######.....
+........oooA..#ooB..
+........o######o....
+........oooooooo....
+....................
+
+
+Total distance/weight from start to destination is 15
+
+
+
+Visualisation of open and closed nodes
+XXXXXXXXXXXXXXXXXXO.
+XXXXXXXXXXXXXXXXXXXO
+XXXXXXXXX######XXXO.
+XXXXXXXXXXXAXX#XXB..
+XXXXXXXXX######XXXO.
+XXXXXXXXXXXXXXXXXXXO
+XXXXXXXXXXXXXXXXXXXO
+
+
+Open nodes = O, closed nodes = X, unexplored nodes = ., inaccsessible nodes = # 

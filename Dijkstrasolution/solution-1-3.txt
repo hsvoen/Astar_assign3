@@ -1,0 +1,22 @@
+map with most efficient path: 27 
+ 
+.........ooo........
+.........o#oo.......
+.......##oo#o.......
+......#oA#o#o.......
+......#o#oo#o.......
+......#ooo#.o.......
+.......###..oooooooB
+
+ 
+ 
+ map of open vertexes(O) and closed vertexes(X) 
+ xxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxx.xxxxxxxxx
+xxxxxxx..xx.xxxxxxxx
+xxxxxx.xA.x.xxxxxxxx
+xxxxxx.x.xx.xxxxxxxx
+xxxxxx.xxx.xxxxxxxxx
+xxxxxxx...xxxxxxxxxB
+ 
+ 

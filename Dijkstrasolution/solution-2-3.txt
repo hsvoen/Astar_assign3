@@ -1,0 +1,28 @@
+map with most efficient path: 595 
+ 
+gggggggggwwwgggggmmmmmmmmmmBRRRRRRRmmmmm
+gggggggggwwwwggggmmmmmmmmmmmmmmmmmRmgggg
+ggggggggggwwwwggggmmmmmmmmmmmmmmggRggggg
+ffgggggggggwwwwggggmmmmmmmmmGGGGGGRrgggg
+ffggggggggggwwwwwwwwwwWWWGGGGggggggrrrrr
+ffffggggggggggwwwwwwwwWwwwwggggggggggggg
+fFFFFFGGGGGGGGGGGGGGGGGwwwwwwggggggmmmmm
+fAfffffffffgggggggggmmmmmmwwwwmmmmmmmmmm
+fffffffffffffffmmmmmmmmmmmmmwwwmmmmmmmmm
+ffffffffffmmmmmmmmmmmmmmmmmmwwwmmmmmmmmm
+
+ 
+ 
+ map of open vertexes(O) and closed vertexes(X) 
+ xxxxxxxxxxxxxxxxxxxxxxxxo..Bxxxxxxxo....
+xxxxxxxxxxxxxxxxxxxxxxxxxo..ooooooxo....
+xxxxxxxxxxxxxxxxxxxxxxxxxxo.ooooxxxxoooo
+xxxxxxxxxxxxxxxxxxxxxxxxxxxoxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxoxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxooxxxxxxooooo
+xAxxxxxxxxxxxxxxxxxxxxxxxxxxooooooo.....
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxo..........
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxo...........
+ 
+ 
