@@ -1,7 +1,4 @@
 
-# link to other implementation
-# http://code.activestate.com/recipes/577519-a-star-shortest-path-algorithm/
-
 from heapq import heappush, heappop
 import math
 import itertools
