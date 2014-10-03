@@ -1,3 +1,5 @@
+shortest path found with the BFS algorithm:
+
 wwwwwggggggggggggggggggggggggggggggrrrrr
 wwwwwwwgggggggggggggggggggggwwwwwgrrgggg
 wwwwwwwwwwwgggAgggggggwwwwwwwwwwwwrwgggg
@@ -14,6 +16,7 @@ Total distance/weight from start to destination is 305
 
 
 
+Visualisation of open and closed nodes
 ...........OXXXXXO......................
 ..........OXXXXXXXO.....................
 .........OXXXXAXXXXO....................

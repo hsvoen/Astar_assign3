@@ -1,0 +1,32 @@
+shortest path found with the Astar algorithm:
+
+wwwwwgggggggggGGGGGGGGGGGGGGGGGGGGgrrrrr
+wwwwwwwgggggggGgggggggggggggwwwwwGRrgggg
+wwwwwwwwwwwgggAgggggggwwwwwwwwwwwwRwgggg
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwRwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwRwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwRRwwwww
+wwwwwwwwgggggBgggggwwwwwwwwwwwwwwRwwwwww
+wwwwggggggfffFffgggggggggwwwwwwwwRwwwwww
+wwggggfffffffFffffffggggggggggggRRgwwwww
+wgggfffrrrrrrRRRRRRRRRRRRRRRRRRRRggggggg
+
+
+Total distance/weight from start to destination is 160
+
+
+
+Visualisation of open and closed nodes
+....OXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.....OXXXXXXXXXXXXXXXXXXXXXXOOOOOXXXXXXX
+......OXXXXXXXAXXXXXXXXOOOOO.....OXOXXXX
+.......OOOOXXXXXXXXXXXO..........OXOOOOO
+...........OOOOOOOOOOO...........OXO....
+................OOO.............OXXO....
+.............BOOXXXOOOOOO.......OXO.....
+.........OOOOXXXXXXXXXXXXOOOOOOOOXO.....
+.......OOXXXXXXXXXXXXXXXXXXXXXXXXXXO....
+......OXXXXXXXXXXXXXXXXXXXXXXXXXXXXXO...
+
+
+Open nodes = O, closed nodes = X, unexplored nodes = ., inaccsessible nodes = # 

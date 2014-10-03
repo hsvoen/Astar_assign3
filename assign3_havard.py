@@ -10,10 +10,6 @@ import itertools
 
 
 
-
-
-
-
 #=================================== Various functions implemented here ===================================
 
 #Reads the board from text files.
@@ -29,7 +25,7 @@ def readBoard(subprob, boardIndex):
 		print("readBoard got invalid Parameters")
 
 def writeBoard(solution, subprob, boardIndex):
-	f=open("solutions\\board-%s-%s.txt" % (subprob, boardIndex),"w")
+	f=open("Astarsolutions\\board-%s-%s.txt" % (subprob, boardIndex),"w")
 	f.write(solution)
 
 	f.close()
@@ -98,10 +94,11 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 	y = goalY
 
 	solution = []
+	openOrClosed = []
 	row = [0]*len(board[0])
 	for i in range(len(board)):
 	 	solution.append(list(row))
-
+	 	openOrClosed.append(list(row))
 
 
 	while board[x][y] != 'A':
@@ -116,15 +113,38 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 		y = next_y
 	for x in range(len(board)):
 		for y in range(len(board[x])):
+			if(board[x][y]== "A"):
+				openOrClosed[x][y] = "A"
+			elif(board[x][y]== "B"):
+				openOrClosed[x][y] = "B"
+			elif(board[x][y]== "#"):
+					openOrClosed[x][y] = "#"	
+			elif(table_of_nodes[x][y] == 0):
+				openOrClosed[x][y] = "."
+			elif(table_of_nodes[x][y].isOpen):
+				openOrClosed[x][y] = "O"
+			elif (not table_of_nodes[x][y].isOpen):
+				openOrClosed[x][y] = "X"
+
 			if solution[x][y] == 0:
 				solution[x][y] = board[x][y]
 	finalmap = ""
+	
 	for row in solution:
 		test = "".join(row) +"\n"
 		finalmap = finalmap + test
 	finalmap = finalmap + "\n\nTotal distance/weight from start to destination is %i" %table_of_nodes[goalX][goalY].totalDist
 	print finalmap
-	return finalmap
+
+	finalOC = ""
+	for row in openOrClosed:
+		test = "".join(row) +"\n"
+		finalOC = finalOC + test
+	finalOC = finalOC
+	print finalOC
+
+	return "shortest path found with the Astar algorithm:\n\n" +finalmap + "\n\n\n\nVisualisation of open and closed nodes\n" + finalOC +"\n\nOpen nodes = O, closed nodes = X, unexplored nodes = ., inaccsessible nodes = # "
+
 
 
 

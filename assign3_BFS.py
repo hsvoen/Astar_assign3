@@ -29,10 +29,10 @@ def readBoard(subprob, boardIndex):
 	else:
 		print("readBoard got invalid Parameters")
 
+#writes a string to a .txt file
 def writeBoard(solution, subprob, boardIndex):
 	f=open("BFSsolutions\\board-%s-%s.txt" % (subprob, boardIndex),"w")
 	f.write(solution)
-
 	f.close()
 
 
@@ -49,9 +49,8 @@ def findGoal(board):
 			if board[x][y] == "B":
 				return [x,y]
 
+#returns an integer with the weight of a given string.
 def getWeight(string):
-
-	#for subproblem A.1
 	if string == ".":
 		return 1
 	elif string == "#":
@@ -71,24 +70,17 @@ def getWeight(string):
 
 
 def propogatePathImprovement(node, tableOfNodes, goalX, goalY):
-	print "prop:"
-	print node.children
+
 	for childCord in node.children:
 		childX = childCord[0]
 		childY = childCord[1]
 		child = tableOfNodes[childX][childY]
 
-		print "propagate path improvement is run for x = %i, y = %i" %(childX, childY)
-		print "old dist: %i, new dist: %i" %(child.dist,node.dist + child.weight )
 		if child != 0 and node.dist + tableOfNodes[childX][childY].weight < child.dist:
-			print "propagate found better parent, old dist: %i, new dist: %i" %(child.dist,node.dist + child.weight )
+
 			tableOfNodes[childX][childY].dist = node.dist + child.weight
 			tableOfNodes[childX][childY].updateTotalDist(goalX,goalY)
 			tableOfNodes[childX][childY].setParent(node)
-
-			#tableOfNodes[childX][childY] = child
-
-			
 			propogatePathImprovement(tableOfNodes[childX][childY], tableOfNodes, goalX, goalY)
 
 
@@ -97,7 +89,7 @@ def propogatePathImprovement(node, tableOfNodes, goalX, goalY):
 
 
 
-
+# Prints the shortest path and all closed and open nodes to the console as a string, and returns a string containing both.
 def print_solution(board, table_of_nodes, goalX, goalY):
 	print "Printing solution to console"
 	x = goalX
@@ -110,9 +102,8 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 	 	solution.append(list(row))
 	 	openOrClosed.append(list(row))
 
-
+	#starting from the goal, iterate through the best parents of each node until the start is reached.
 	while board[x][y] != 'A':
-		print "x = %i y = %i" %(x,y)
 		if board[x][y] == '.':
 			solution[x][y] = 'o'
 		else:
@@ -121,6 +112,8 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 		next_y = table_of_nodes[x][y].parentY
 		x = next_x
 		y = next_y
+
+	#Creates the open and closed nodes string
 	for x in range(len(board)):
 		for y in range(len(board[x])):
 			if(board[x][y]== "A"):
@@ -139,8 +132,9 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 
 			if solution[x][y] == 0:
 				solution[x][y] = board[x][y]
-	finalmap = ""
 	
+	#Combines the lists into strings
+	finalmap = ""
 	for row in solution:
 		test = "".join(row) +"\n"
 		finalmap = finalmap + test
@@ -154,8 +148,7 @@ def print_solution(board, table_of_nodes, goalX, goalY):
 	finalOC = finalOC
 	print finalOC
 
-	return finalmap + "\n\n\n\n" + finalOC +"\n\nOpen nodes = O, closed nodes = X, unexplored nodes = ., inaccsessible nodes = # "
-
+	return "shortest path found with the BFS algorithm:\n\n" +finalmap + "\n\n\n\nVisualisation of open and closed nodes\n" + finalOC +"\n\nOpen nodes = O, closed nodes = X, unexplored nodes = ., inaccsessible nodes = # "
 
 
 
@@ -172,7 +165,7 @@ class Node:
 
 	#parents and children
 	children = [] #Stores the indices of the child [x,y], use it to look up in the tableOfNodes
-	parentX = 0 #coordinates for current best parent
+	parentX = 0 #indices for current best parent
 	parentY = 0
 
 	weight = 0 
@@ -188,23 +181,19 @@ class Node:
 		self.ID = ID
 		self.children = []
 
-	def __lt__(self, other): # Comparison method for the priority queue
-		return self.totalDist < other.totalDist
 
-	def addChild(self, other):
-		print "adding child x = %i y = %i " %(other.xPos, other.yPos)
-		print self.children
+
+	def addChild(self, other): 			
 		self.children.append([other.xPos, other.yPos])
 
-	def estimate(self, xDest, yDest):
+	#takes the manhatten distance to the goal
+	def estimate(self, xDest, yDest): 	
 		xd = xDest - self.xPos
 		yd = yDest - self.yPos
 
 		#Takes manhattan distance
 		d = abs(xd) + abs(yd)
-
 		self.estDist = d
-
 		return d
 
 	def updateTotalDist(self, xDest, yDest):
@@ -223,18 +212,6 @@ class Node:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #A* algorithm
 #Takes in a board and returns the shortest path from start to goal
 def Astar(board):
@@ -246,26 +223,14 @@ def Astar(board):
 	startY = start_pos[1]
 	goal_pos = findGoal(board)
 	goalX = goal_pos[0]
-	goalY = goal_pos[1]
+	goalY = goal_pos[1]	
+	q = Queue.Queue(maxsize=0) #The FIFO queue for storing open nodes
 	
-
-
-	q = Queue.Queue(maxsize=0)
-
 	tableOfNodes = [] 				# contains all nodes created.
-
 	row = [0]*len(board[0])
 	for i in range(len(board)):
 	 	tableOfNodes.append(list(row))
-
-	nodeID = 1
-
-
-
-
-
-
-
+	nodeID = 1 #Sets the unique node ID
 
 	# Creating the start node and pushing it into the list of open nodes.
 	n0 = Node(startX, startY, 0, 0, 0, nodeID)
@@ -274,7 +239,6 @@ def Astar(board):
 	n0.isOpen = True
 
 	q.put(n0)
-
 	tableOfNodes[startX][startY] =n0
 	
 
@@ -286,24 +250,16 @@ def Astar(board):
 	#Will run while there are still elements int the priority queue.
 	while not(q.empty()) :
 		
-
-
 		n0 = q.get()
 		x = n0.xPos
 		y = n0.yPos
-		
-		print "popping node, x = %i, y = %i " %(x, y)
 
 		tableOfNodes[x][y].isOpen = False
-
-
 
 		#If goal is reached, return and exit.
 		if (x == goalX and y == goalY):
 
 			print "Goal found. Total distance is: %i" %n0.totalDist
-
-			print tableOfNodes[goalX][goalY].totalDist
 			return print_solution(board, tableOfNodes, goalX, goalY)
 
 
@@ -312,39 +268,31 @@ def Astar(board):
 			dx = x + direct[0]
 			dy = y + direct[1]
 
-		
 			# Make sure that the move does not exit the board
 			if(dx >= 0 and dy >= 0 and dy < len(board[0]) and dx < len(board)):
 
-			
-
 				if(tableOfNodes[dx][dy] == 0 ):
-					print "Child node is new, x = %i, y = %i " %(dx, dy)
 					
+					#Checks that the child is not a closed node before opening it
 					if (board[dx][dy] != "#"):
+
+						#Initialising the node, pushing it into the queue of open nodes.
 						weight = getWeight(board[dx][dy])
 						nChild = Node(dx,dy, n0.dist + weight, 0, weight, nodeID)
 						nodeID += 1
 						nChild.updateTotalDist(goalX,goalY)
 						nChild.setParent(n0)
 
-
-
 						nChild.isOpen = True
+
 						tableOfNodes[dx][dy] = nChild
-
-						#print "adding child to parent x = %i, y = %i" %(x, y)
 						tableOfNodes[x][y].children.append([dx,dy])
-
 						q.put(tableOfNodes[dx][dy])
 
 				# check if children have allready been created
 				elif (tableOfNodes[dx][dy] != 0 ):
-					print "child node allready created, x = %i, y = %i " %(dx, dy)
 
 					if tableOfNodes[x][y].dist + tableOfNodes[dx][dy].weight < tableOfNodes[dx][dy].dist: #tests if the node is a better parent than the old one
-						print "Better parent found. Symbol: %s" %board[dx][dy]
-						print "old distance: %i, new distance: %i" %(tableOfNodes[dx][dy].dist, tableOfNodes[x][y].dist + tableOfNodes[dx][dy].weight)
 						
 						tableOfNodes[dx][dy].dist = tableOfNodes[x][y].dist + tableOfNodes[dx][dy].weight
 						tableOfNodes[dx][dy].updateTotalDist(goalX, goalY)
@@ -367,7 +315,7 @@ def Astar(board):
 
 
 
-#####Testcode here###########
+#Main()
 for i in [1,2]:
 	for k in [1,2,3,4]:
 
